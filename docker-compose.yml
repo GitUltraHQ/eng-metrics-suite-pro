@@ -1,0 +1,108 @@
+services:
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  # Continuous worker: claims queued repos and imports commit stats. Exits
+  # cleanly (not a crash) whenever the queue is empty -- harmless to leave
+  # running under `restart: unless-stopped` even before you've discovered
+  # any repos yet.
+  git-processor:
+    image: ghcr.io/jsooter/git-processor:latest
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-changeme}@postgres:5432/postgres
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      GITLAB_TOKEN: ${GITLAB_TOKEN:-}
+      BITBUCKET_USERNAME: ${BITBUCKET_USERNAME:-}
+      BITBUCKET_APP_PASSWORD: ${BITBUCKET_APP_PASSWORD:-}
+      BITBUCKET_SERVER_USERNAME: ${BITBUCKET_SERVER_USERNAME:-}
+      BITBUCKET_SERVER_TOKEN: ${BITBUCKET_SERVER_TOKEN:-}
+      AZURE_DEVOPS_PAT: ${AZURE_DEVOPS_PAT:-}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      TELEMETRY_DISABLED: ${TELEMETRY_DISABLED:-}
+      TELEMETRY_SHARED_SECRET: ${TELEMETRY_SHARED_SECRET:-}
+    depends_on:
+      - postgres
+    volumes:
+      # Drop discover_repos.py's --config YAML (org/repo exclude patterns
+      # etc.) here, e.g. /var/lib/eng-metrics-suite/discover_config.yaml.
+      - /var/lib/eng-metrics-suite:/var/lib/eng-metrics-suite:ro
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Same idea as git-processor, but for PR/MR stats.
+  pr-processor:
+    image: ghcr.io/jsooter/pr-processor:latest
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-changeme}@postgres:5432/postgres
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      GITLAB_TOKEN: ${GITLAB_TOKEN:-}
+      BITBUCKET_USERNAME: ${BITBUCKET_USERNAME:-}
+      BITBUCKET_APP_PASSWORD: ${BITBUCKET_APP_PASSWORD:-}
+      BITBUCKET_SERVER_USERNAME: ${BITBUCKET_SERVER_USERNAME:-}
+      BITBUCKET_SERVER_TOKEN: ${BITBUCKET_SERVER_TOKEN:-}
+      AZURE_DEVOPS_PAT: ${AZURE_DEVOPS_PAT:-}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      TELEMETRY_DISABLED: ${TELEMETRY_DISABLED:-}
+      TELEMETRY_SHARED_SECRET: ${TELEMETRY_SHARED_SECRET:-}
+    depends_on:
+      - postgres
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Not a long-running service -- report.py always needs args (at minimum
+  # --output), so this container isn't meant to be left running. See the
+  # README for how to invoke it with `docker compose run`.
+  eng-reports:
+    image: ghcr.io/jsooter/eng-reports:latest
+    entrypoint: ["python3"]
+    environment:
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-changeme}@postgres:5432/postgres
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      TELEMETRY_DISABLED: ${TELEMETRY_DISABLED:-}
+      TELEMETRY_SHARED_SECRET: ${TELEMETRY_SHARED_SECRET:-}
+    depends_on:
+      - postgres
+    volumes:
+      - ./reports:/out
+      # Drop report.py's --team-map CSV here, e.g.
+      # /var/lib/eng-metrics-suite/teams.csv.
+      - /var/lib/eng-metrics-suite:/var/lib/eng-metrics-suite:ro
+
+  # Paid-tier plugin (private GHCR package -- see this repo's README for
+  # the access-grant process). Long-running, unlike eng-reports/
+  # rewrite-ratio, since it's a REST API a customer's own dashboards poll.
+  eng-api:
+    image: ghcr.io/jsooter/eng-api:latest
+    restart: unless-stopped
+    ports:
+      - "${ENG_API_PORT:-8000}:8000"
+    environment:
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-changeme}@postgres:5432/postgres
+      # Required, no default -- see eng-api's README's "Auth" section.
+      # Set this to your own secret; it's never issued or stored by us.
+      API_KEY: ${ENG_API_KEY:?set ENG_API_KEY in your .env}
+      TEAM_MAP_PATH: ${ENG_API_TEAM_MAP_PATH:-}
+      AI_COAUTHORS_PATH: ${ENG_API_AI_COAUTHORS_PATH:-}
+      TAG_PATTERN: ${ENG_API_TAG_PATTERN:-}
+      TELEMETRY_DISABLED: ${TELEMETRY_DISABLED:-}
+      TELEMETRY_SHARED_SECRET: ${TELEMETRY_SHARED_SECRET:-}
+    depends_on:
+      - postgres
+    volumes:
+      - /var/lib/eng-metrics-suite:/var/lib/eng-metrics-suite:ro
+
+volumes:
+  pgdata:

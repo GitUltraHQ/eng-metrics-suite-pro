@@ -1,0 +1,24 @@
+NOT LEGAL ADVICE -- see the note in eng-metrics-suite's and eng-api's
+own LICENSE files; the same caveat applies here.
+
+This repo contributes no software of its own -- it is a
+`docker-compose.yml` and this README, bundling together components that
+are each already separately licensed:
+
+- `postgres`, `git-processor`, `pr-processor`, `eng-reports`: governed
+  by eng-metrics-suite's LICENSE
+  (https://github.com/jsooter/eng-metrics-suite/blob/master/LICENSE).
+- `eng-api`: governed by eng-api's own LICENSE
+  (https://github.com/jsooter/eng-api/blob/master/LICENSE).
+- Any other add-on referenced here in the future: governed by that
+  component's own LICENSE.
+
+Your access to this repo does not, by itself, grant you any rights to
+any of the above -- each component's own license (and its own
+package-level access grant) governs your use of it. This repo's
+compose file and README are Licensor's copyrighted material, provided
+for the convenience of customers who already hold valid licenses to
+the components it references; redistributing this repo's contents
+outside that context is not authorized.
+
+Licensor: Josh Sooter
