@@ -7,9 +7,9 @@ are each already separately licensed:
 
 - `postgres`, `git-processor`, `pr-processor`, `eng-reports`: governed
   by eng-metrics-suite's LICENSE
-  (https://github.com/jsooter/eng-metrics-suite/blob/master/LICENSE).
+  (https://github.com/GitUltraHQ/eng-metrics-suite/blob/master/LICENSE).
 - `eng-api`: governed by eng-api's own LICENSE
-  (https://github.com/jsooter/eng-api/blob/master/LICENSE).
+  (https://github.com/GitUltraHQ/eng-api/blob/master/LICENSE).
 - Any other add-on referenced here in the future: governed by that
   component's own LICENSE.
 

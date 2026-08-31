@@ -3,7 +3,7 @@
 A ready-to-run `docker-compose.yml` for paying customers (Team and
 Enterprise tiers -- they share the same software bundle, Enterprise's
 difference is extra services, not extra features), bundling the same
-free-tier pipeline as [eng-metrics-suite](https://github.com/jsooter/eng-metrics-suite)
+free-tier pipeline as [eng-metrics-suite](https://github.com/GitUltraHQ/eng-metrics-suite)
 alongside paid-tier add-ons, so a customer doesn't have to hand-edit
 their own compose file to wire those in.
 
@@ -22,7 +22,7 @@ Everything in `eng-metrics-suite` (`postgres`, `git-processor`,
 
 - **`eng-api`** -- REST/JSON API for dashboard integrations. Long-running
   service, exposed on `ENG_API_PORT` (default 8000). See
-  [eng-api](https://github.com/jsooter/eng-api)'s own README for the
+  [eng-api](https://github.com/GitUltraHQ/eng-api)'s own README for the
   full endpoint list, auth, and config.
 
 **Not included in the compose file:** `rewrite-ratio`. It's a one-shot
@@ -30,7 +30,7 @@ diagnostic CLI, not a long-running service, so it doesn't belong in a
 `docker compose up` stack -- run it directly per its own README:
 
 ```
-docker run --rm -v /path/to/repo:/repo:ro ghcr.io/jsooter/rewrite-ratio:latest \
+docker run --rm -v /path/to/repo:/repo:ro ghcr.io/gitultrahq/rewrite-ratio:latest \
     --repo /repo --author alice@example.com --start 2026-01-01 --end 2026-08-24
 ```
 
@@ -49,7 +49,7 @@ docker compose up -d
 ```
 
 Same setup as `eng-metrics-suite` otherwise -- see
-[eng-metrics-docs](https://jsooter.github.io/eng-metrics-docs/) for
+[eng-metrics-docs](https://gitultrahq.github.io/eng-metrics-docs/) for
 Getting Started / Discovering Repos / Running Workers / Generating
 Reports, none of which differ here. This repo's README only covers
 what's different: the paid add-ons.
@@ -57,7 +57,7 @@ what's different: the paid add-ons.
 ## Requirements
 
 - Docker + Docker Compose
-- Pull access to the private `ghcr.io/jsooter/eng-api` package (granted
+- Pull access to the private `ghcr.io/gitultrahq/eng-api` package (granted
   to you individually after purchase -- see `eng-api`'s README if you
   need to re-authenticate `docker login ghcr.io`)
 
