@@ -38,8 +38,8 @@ docker run --rm -v /path/to/repo:/repo:ro ghcr.io/gitultrahq/rewrite-ratio:lates
 
 ```
 cp .env.example .env
-# edit .env: set POSTGRES_PASSWORD, ENG_API_KEY, and whichever vendor
-# token(s) you're importing from
+# edit .env: set POSTGRES_PASSWORD, ENG_API_KEY, GITULTRA_LICENSE_KEY,
+# and whichever vendor token(s) you're importing from
 
 sudo mkdir -p /var/lib/eng-metrics-suite
 sudo chown "$(id -u):$(id -g)" /var/lib/eng-metrics-suite
@@ -57,18 +57,20 @@ what's different: the paid add-ons.
 ## Requirements
 
 - Docker + Docker Compose
-- Pull access to the private `ghcr.io/gitultrahq/eng-api` package (granted
-  to you individually after purchase -- see `eng-api`'s README if you
-  need to re-authenticate `docker login ghcr.io`)
+- A signed license key for `eng-api` (issued to you after purchase --
+  contact support@gitultra.com). No `docker login`/package grant needed:
+  `ghcr.io/gitultrahq/eng-api` is a **public** image, gated instead by
+  `GITULTRA_LICENSE_KEY` -- see `eng-api`'s own README's "Distribution"
+  section for details.
 
 ## Distribution (this repo's own access)
 
-Same manual, per-customer pattern as the packages it references: you
-were added as a **Collaborator** (Read access) on this repo directly.
-This repo's contents aren't sensitive on their own (see the note above),
-so this is about convenience, not a second security layer -- don't
-assume removing repo access alone revokes anything meaningful without
-also reviewing package-level grants.
+You were added as a **Collaborator** (Read access) on this repo
+directly, for convenience -- see the note above for why this repo isn't
+itself a security boundary. Unlike the manual GHCR package-grant model
+this repo used to describe, `eng-api`'s actual access control is now the
+signed `GITULTRA_LICENSE_KEY` (see "Requirements" above); removing this
+repo's Collaborator access doesn't revoke that key.
 
 ## License
 

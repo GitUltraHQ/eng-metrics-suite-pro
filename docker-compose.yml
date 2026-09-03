@@ -81,9 +81,10 @@ services:
       # /var/lib/eng-metrics-suite/teams.csv.
       - /var/lib/eng-metrics-suite:/var/lib/eng-metrics-suite:ro
 
-  # Paid-tier plugin (private GHCR package -- see this repo's README for
-  # the access-grant process). Long-running, unlike eng-reports/
-  # rewrite-ratio, since it's a REST API a customer's own dashboards poll.
+  # Paid-tier plugin (public GHCR package, gated by a signed license key
+  # -- see this repo's README for setup). Long-running, unlike
+  # eng-reports/rewrite-ratio, since it's a REST API a customer's own
+  # dashboards poll.
   eng-api:
     image: ghcr.io/gitultrahq/eng-api:latest
     restart: unless-stopped
@@ -94,6 +95,9 @@ services:
       # Required, no default -- see eng-api's README's "Auth" section.
       # Set this to your own secret; it's never issued or stored by us.
       API_KEY: ${ENG_API_KEY:?set ENG_API_KEY in your .env}
+      # Required, no default -- the license key you were issued; see
+      # eng-api's README's "Distribution" section.
+      GITULTRA_LICENSE_KEY: ${GITULTRA_LICENSE_KEY:?set GITULTRA_LICENSE_KEY in your .env}
       TEAM_MAP_PATH: ${ENG_API_TEAM_MAP_PATH:-}
       AI_COAUTHORS_PATH: ${ENG_API_AI_COAUTHORS_PATH:-}
       TAG_PATTERN: ${ENG_API_TAG_PATTERN:-}
