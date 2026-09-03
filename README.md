@@ -22,12 +22,15 @@ for the short version.
 ## What's included
 
 Everything in `eng-metrics-suite` (`postgres`, `git-processor`,
-`pr-processor`, `eng-reports`), plus:
+`pr-processor`, `eng-reports`, and optional `issue-processor` for
+change-failure-rate/MTTR), plus:
 
 - **`eng-api`** -- REST/JSON API for dashboard integrations. Long-running
   service, exposed on `ENG_API_PORT` (default 8000). See
   [eng-api](https://github.com/GitUltraHQ/eng-api)'s own README for the
-  full endpoint list, auth, and config.
+  full endpoint list, auth, and config -- including
+  `/v1/change-failure-rate`/`/v1/mttr`, which return real data only once
+  `issue-processor` is configured (see `.env.example`'s `JIRA_*` vars).
 
 **Not included in the compose file:** `rewrite-ratio`. It's a one-shot
 diagnostic CLI, not a long-running service, so it doesn't belong in a
