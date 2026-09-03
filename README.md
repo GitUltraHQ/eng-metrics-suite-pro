@@ -1,5 +1,7 @@
 # eng-metrics-suite-pro
 
+New here? See [QUICKSTART.md](QUICKSTART.md) for the short version.
+
 A ready-to-run `docker-compose.yml` for paying customers (Team and
 Enterprise tiers -- they share the same software bundle, Enterprise's
 difference is extra services, not extra features), bundling the same
@@ -9,11 +11,13 @@ their own compose file to wire those in.
 
 **This repo is not itself a security boundary.** The compose file
 contains no proprietary logic -- just orchestration (image names + env
-vars). The actual protection is the **private GHCR packages** it
-references (`eng-api`, and any future add-ons); this repo being private
-is about not casually publicizing the paid bundle's shape to anyone
-browsing the public repo, not a second gate. See each add-on's own repo
-for its specific distribution/access-grant process.
+vars). The actual protection is the **signed license key**
+(`GITULTRA_LICENSE_KEY`) each paid add-on (`eng-api`, and any future
+ones) verifies at startup -- their GHCR images are public. This repo
+being private is about not casually publicizing the paid bundle's shape
+to anyone browsing the public repo, not a second gate. See each add-on's
+own repo for its specific distribution details, or [QUICKSTART.md](QUICKSTART.md)
+for the short version.
 
 ## What's included
 
