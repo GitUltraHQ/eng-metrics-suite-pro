@@ -22,8 +22,10 @@ for the short version.
 ## What's included
 
 Everything in `eng-metrics-suite` (`postgres`, `git-processor`,
-`pr-processor`, `eng-reports`, and optional `issue-processor` for
-change-failure-rate/MTTR), plus:
+`pr-processor`, `eng-reports` -- including its second script,
+`allocation_report.py`, for investment allocation -- and optional
+`issue-processor` for change-failure-rate/MTTR and/or investment
+allocation, each independently configurable), plus:
 
 - **`eng-api`** -- REST/JSON API for dashboard integrations. Long-running
   service, exposed on `ENG_API_PORT` (default 8000). See
