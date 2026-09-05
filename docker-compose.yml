@@ -151,9 +151,9 @@ services:
   # this is a long-running service like eng-api, not a locally-spawned
   # subprocess -- point your MCP client config at
   # http://<this-host>:${GITULTRA_MCP_PORT:-8100}/mcp (see gitultra-mcp's
-  # own README for a sample Claude Desktop/Code config). Currently a
-  # PRIVATE GHCR image (contact support@gitultra.com for pull access) --
-  # see gitultra-mcp's own README's "Distribution" section.
+  # own README for a sample Claude Desktop/Code config). Public GHCR
+  # image, license-gated -- see gitultra-mcp's own README's
+  # "Distribution" section.
   gitultra-mcp:
     image: ghcr.io/gitultrahq/gitultra-mcp:latest
     restart: unless-stopped

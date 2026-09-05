@@ -36,9 +36,8 @@ allocation, each independently configurable), plus:
 - **`gitultra-mcp`** -- MCP server so an AI agent (Claude Desktop, Claude
   Code, etc.) can query the metrics above conversationally, by wrapping
   `eng-api`'s endpoints as tools. Long-running, exposed on
-  `GITULTRA_MCP_PORT` (default 8100). Currently a **private** GHCR image
-  (contact support@gitultra.com for pull access) -- see
-  [gitultra-mcp](https://github.com/GitUltraHQ/gitultra-mcp)'s own
+  `GITULTRA_MCP_PORT` (default 8100). Public GHCR image, license-gated
+  -- see [gitultra-mcp](https://github.com/GitUltraHQ/gitultra-mcp)'s own
   README for setup and client-connection details.
 
 **Not included in the compose file:** `rewrite-ratio`. It's a one-shot
