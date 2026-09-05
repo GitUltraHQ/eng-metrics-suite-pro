@@ -143,5 +143,34 @@ services:
     volumes:
       - /var/lib/eng-metrics-suite:/var/lib/eng-metrics-suite:ro
 
+  # MCP (Model Context Protocol) server: lets an AI agent (Claude
+  # Desktop, Claude Code, etc.) query the metrics above conversationally,
+  # by wrapping eng-api's REST endpoints as MCP tools. Pure HTTP-to-HTTP
+  # proxy to eng-api -- no direct database access, no state of its own,
+  # so no DATABASE_URL here. Streamable HTTP transport (not stdio), so
+  # this is a long-running service like eng-api, not a locally-spawned
+  # subprocess -- point your MCP client config at
+  # http://<this-host>:${GITULTRA_MCP_PORT:-8100}/mcp (see gitultra-mcp's
+  # own README for a sample Claude Desktop/Code config). Currently a
+  # PRIVATE GHCR image (contact support@gitultra.com for pull access) --
+  # see gitultra-mcp's own README's "Distribution" section.
+  gitultra-mcp:
+    image: ghcr.io/gitultrahq/gitultra-mcp:latest
+    restart: unless-stopped
+    ports:
+      - "${GITULTRA_MCP_PORT:-8100}:8000"
+    environment:
+      ENG_API_BASE_URL: http://eng-api:8000
+      # Same value as ENG_API_KEY above -- this server's own inbound
+      # auth reuses eng-api's key rather than managing a second secret.
+      ENG_API_KEY: ${ENG_API_KEY:?set ENG_API_KEY in your .env}
+      # Required, no default -- your license key, covering the
+      # "gitultra-mcp" product (can be the same key as eng-api's above
+      # if it covers both products); see gitultra-mcp's README.
+      GITULTRA_LICENSE_KEY: ${GITULTRA_LICENSE_KEY:?set GITULTRA_LICENSE_KEY in your .env}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    depends_on:
+      - eng-api
+
 volumes:
   pgdata:

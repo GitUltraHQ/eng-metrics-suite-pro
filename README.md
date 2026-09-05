@@ -33,6 +33,13 @@ allocation, each independently configurable), plus:
   full endpoint list, auth, and config -- including
   `/v1/change-failure-rate`/`/v1/mttr`, which return real data only once
   `issue-processor` is configured (see `.env.example`'s `JIRA_*` vars).
+- **`gitultra-mcp`** -- MCP server so an AI agent (Claude Desktop, Claude
+  Code, etc.) can query the metrics above conversationally, by wrapping
+  `eng-api`'s endpoints as tools. Long-running, exposed on
+  `GITULTRA_MCP_PORT` (default 8100). Currently a **private** GHCR image
+  (contact support@gitultra.com for pull access) -- see
+  [gitultra-mcp](https://github.com/GitUltraHQ/gitultra-mcp)'s own
+  README for setup and client-connection details.
 
 **Not included in the compose file:** `rewrite-ratio`. It's a one-shot
 diagnostic CLI, not a long-running service, so it doesn't belong in a
