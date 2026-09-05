@@ -1,8 +1,8 @@
 # GitUltra Paid Tier — Quick Start
 
 Welcome! You've been issued a **license key** for GitUltra's paid-tier
-tools: `eng-api` and `rewrite-ratio`. This guide covers everything you
-need to start running them.
+tools: `eng-api`, `rewrite-ratio`, and `gitultra-mcp`. This guide
+covers everything you need to start running them.
 
 ## Your license key
 
@@ -57,6 +57,56 @@ docker run --rm -p 8000:8000 \
 
 Endpoints, auth details, and optional config: see the
 [eng-api README](https://github.com/GitUltraHQ/eng-api#readme).
+
+## Running `gitultra-mcp`
+
+An MCP ([Model Context Protocol](https://modelcontextprotocol.io/))
+server so an AI agent -- Claude Desktop, Claude Code, or anything else
+that speaks MCP -- can query the same metrics `eng-api` exposes,
+conversationally. It's a thin layer on top of `eng-api`: needs a
+running `eng-api` instance to actually do anything, and reuses that
+same `API_KEY` for its own auth (one secret, not two).
+
+**Already using this repo's `docker-compose.yml`?** `gitultra-mcp` is
+already wired in -- just make sure your `.env`'s `GITULTRA_LICENSE_KEY`
+covers it (see below) and `GITULTRA_MCP_PORT` is set if you want a
+port other than the default `8100`.
+
+**Running it standalone instead?**
+
+```
+docker run --rm -p 8100:8000 \
+    -e ENG_API_BASE_URL=http://eng-api:8000 \
+    -e ENG_API_KEY=<same value as eng-api's API_KEY> \
+    -e GITULTRA_LICENSE_KEY=<your key> \
+    ghcr.io/gitultrahq/gitultra-mcp:latest
+```
+
+Then connect a client. Claude Code:
+
+```
+claude mcp add --transport http gitultra http://localhost:8100/mcp \
+    -H "Authorization: Bearer <your ENG_API_KEY value>"
+```
+
+Claude Desktop: add to your MCP server config --
+
+```json
+{
+  "mcpServers": {
+    "gitultra": {
+      "type": "http",
+      "url": "http://localhost:8100/mcp",
+      "headers": {
+        "Authorization": "Bearer <your ENG_API_KEY value>"
+      }
+    }
+  }
+}
+```
+
+Full tool list and details: see the
+[gitultra-mcp README](https://github.com/GitUltraHQ/gitultra-mcp#readme).
 
 ## What the license key does (and doesn't) protect
 
