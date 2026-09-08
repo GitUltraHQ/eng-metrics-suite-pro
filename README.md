@@ -67,7 +67,9 @@ Same setup as `eng-metrics-suite` otherwise -- see
 [eng-metrics-docs](https://docs.gitultra.com/) for
 Getting Started / Discovering Repos / Running Workers / Generating
 Reports, none of which differ here. This repo's README only covers
-what's different: the paid add-ons.
+what's different: the paid add-ons. `docker-compose.yml` also declares a
+`git_mirrors` volume for `git-processor`'s persistent per-repo clone
+cache -- Docker manages that one itself, no `mkdir`/`chown` needed.
 
 ## Requirements
 
