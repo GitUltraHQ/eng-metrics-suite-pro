@@ -185,6 +185,15 @@ services:
       # eng-api's README's "Distribution" section.
       GITULTRA_LICENSE_KEY: ${GITULTRA_LICENSE_KEY:?set GITULTRA_LICENSE_KEY in your .env}
       TEAM_MAP_PATH: ${ENG_API_TEAM_MAP_PATH:-}
+      # Optional -- absent means the org-level roles feature (Admin/
+      # Executive/Director) is off entirely, no behavior change. See
+      # gitultra-wiki/Specs/Org-Role-Executive-Access.md. If you want
+      # to use the admin-only live CSV-upload endpoints below (for
+      # this or TEAM_MAP_PATH), point both env vars at a file under
+      # the writable/ subdirectory in the volumes block below --
+      # anywhere else under /var/lib/eng-metrics-suite is read-only to
+      # this container.
+      ORG_ROLES_PATH: ${ENG_API_ORG_ROLES_PATH:-}
       AI_COAUTHORS_PATH: ${ENG_API_AI_COAUTHORS_PATH:-}
       TAG_PATTERN: ${ENG_API_TAG_PATTERN:-}
       TELEMETRY_DISABLED: ${TELEMETRY_DISABLED:-}
@@ -204,6 +213,19 @@ services:
         condition: service_completed_successfully
     volumes:
       - /var/lib/eng-metrics-suite:/var/lib/eng-metrics-suite:ro
+      # Read-write, unlike the mount above -- required only if you use
+      # the admin-only POST /v1/admin/team-map or /v1/admin/org-roles
+      # upload endpoints (live reload without a restart; see
+      # gitultra-wiki/Specs/Org-Role-Executive-Access.md's Config
+      # Management section). Scoped to a subdirectory rather than
+      # widening the mount above, so every other config file eng-api
+      # reads (discover-script YAMLs, KPI targets, etc.) stays
+      # read-only. `sudo mkdir -p /var/lib/eng-metrics-suite/writable`
+      # (and chown it appropriately) before using either upload
+      # endpoint. Not required if you only ever hand-edit these CSVs
+      # and restart -- that keeps working unchanged from wherever
+      # TEAM_MAP_PATH/ORG_ROLES_PATH already point.
+      - /var/lib/eng-metrics-suite/writable:/var/lib/eng-metrics-suite/writable:rw
 
   # MCP (Model Context Protocol) server: lets an AI agent (Claude
   # Desktop, Claude Code, etc.) query the metrics above conversationally,
