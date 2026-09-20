@@ -239,7 +239,7 @@ services:
   # image, license-gated -- see gitultra-mcp's own README's
   # "Distribution" section.
   gitultra-mcp:
-    image: ghcr.io/gitultrahq/gitultra-mcp:v1.1.0
+    image: ghcr.io/gitultrahq/gitultra-mcp:v1.1.1
     restart: unless-stopped
     ports:
       - "${GITULTRA_MCP_PORT:-8100}:8000"
