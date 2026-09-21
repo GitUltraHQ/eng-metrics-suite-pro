@@ -172,7 +172,7 @@ services:
   # eng-reports/rewrite-ratio, since it's a REST API a customer's own
   # dashboards poll.
   eng-api:
-    image: ghcr.io/gitultrahq/eng-api:v1.2.0
+    image: ghcr.io/gitultrahq/eng-api:v1.3.0
     restart: unless-stopped
     ports:
       - "${ENG_API_PORT:-8000}:8000"
@@ -239,7 +239,7 @@ services:
   # image, license-gated -- see gitultra-mcp's own README's
   # "Distribution" section.
   gitultra-mcp:
-    image: ghcr.io/gitultrahq/gitultra-mcp:v1.1.1
+    image: ghcr.io/gitultrahq/gitultra-mcp:v1.2.0
     restart: unless-stopped
     ports:
       - "${GITULTRA_MCP_PORT:-8100}:8000"
