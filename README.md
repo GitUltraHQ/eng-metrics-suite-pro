@@ -13,10 +13,10 @@ their own compose file to wire those in.
 contains no proprietary logic -- just orchestration (image names + env
 vars). The actual protection is the **signed license key**
 (`GITULTRA_LICENSE_KEY`) each paid add-on (`eng-api`, and any future
-ones) verifies at startup -- their GHCR images are public. This repo
-being private is about not casually publicizing the paid bundle's shape
-to anyone browsing the public repo, not a second gate. See each add-on's
-own repo for its specific distribution details, or [QUICKSTART.md](QUICKSTART.md)
+ones) verifies at startup -- their GHCR images are public, and so is
+this repo. Cloning it just gets you the compose file and docs; it
+doesn't get you a working stack without a key. See each add-on's own
+repo for its specific distribution details, or [QUICKSTART.md](QUICKSTART.md)
 for the short version.
 
 ## What's included
@@ -82,12 +82,12 @@ cache -- Docker manages that one itself, no `mkdir`/`chown` needed.
 
 ## Distribution (this repo's own access)
 
-You were added as a **Collaborator** (Read access) on this repo
-directly, for convenience -- see the note above for why this repo isn't
-itself a security boundary. Unlike the manual GHCR package-grant model
-this repo used to describe, `eng-api`'s actual access control is now the
-signed `GITULTRA_LICENSE_KEY` (see "Requirements" above); removing this
-repo's Collaborator access doesn't revoke that key.
+This repo is **public** -- anyone can clone it. As the note above
+explains, that's fine: the compose file has no proprietary logic, and
+the real gate is the signed `GITULTRA_LICENSE_KEY` each paid add-on
+verifies at startup (see "Requirements" above). Cloning this repo
+doesn't get you a working Pro/Enterprise stack on its own -- you still
+need a key, issued after purchase via support@gitultra.com.
 
 ## License
 
