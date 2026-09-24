@@ -86,7 +86,7 @@ This repo is **public** -- anyone can clone it. As the note above
 explains, that's fine: the compose file has no proprietary logic, and
 the real gate is the signed `GITULTRA_LICENSE_KEY` each paid add-on
 verifies at startup (see "Requirements" above). Cloning this repo
-doesn't get you a working Pro/Enterprise stack on its own -- you still
+doesn't get you a working Team/Enterprise stack on its own -- you still
 need a key, issued after purchase via support@gitultra.com.
 
 ## License
