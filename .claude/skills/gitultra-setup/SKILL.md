@@ -129,7 +129,7 @@ afterward where to find it in `.env` if they want to use it later.
 ## Step 4: Run the actual setup
 
 1. `docker compose up -d` -- starts Postgres plus the workers (and
-   `eng-api`/`gitultra-mcp` on pro tier). The workers exiting
+   `eng-api`/`gitultra-mcp` on Team tier). The workers exiting
    immediately in the logs is expected (nothing queued yet), not a
    failure -- don't misinterpret `docker compose logs` showing an
    exited worker as broken.
