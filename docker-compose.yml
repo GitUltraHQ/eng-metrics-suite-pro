@@ -26,7 +26,7 @@ services:
   # before starting. restart: "no" is deliberate -- exiting 0 isn't a
   # crash to recover from, this isn't meant to be left running.
   migrate:
-    image: ghcr.io/gitultrahq/gitultra-migrate:v1.6.0
+    image: ghcr.io/gitultrahq/gitultra-migrate:v1.7.0
     restart: "no"
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgres://postgres:${POSTGRES_PASSWORD:-changeme}@postgres:5432/git_stats}
@@ -143,7 +143,7 @@ services:
   # --output), so this container isn't meant to be left running. See the
   # README for how to invoke it with `docker compose run`.
   eng-reports:
-    image: ghcr.io/gitultrahq/eng-reports:v1.6.0
+    image: ghcr.io/gitultrahq/eng-reports:v1.7.0
     entrypoint: ["python3"]
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgres://postgres:${POSTGRES_PASSWORD:-changeme}@postgres:5432/git_stats}
@@ -156,6 +156,7 @@ services:
       # Same file eng-api reads below, so the Executive Report PDF and
       # GET /v1/executive-report always agree on targets.
       KPI_TARGETS_PATH: ${KPI_TARGETS_PATH:-}
+      FISCAL_YEAR_START_MONTH: ${FISCAL_YEAR_START_MONTH:-}
       # Only needed if you use email_team_reports.py to email team
       # reports to managers -- see docs/scheduling.md. Your own SMTP
       # relay, never GitUltra's -- see
@@ -178,7 +179,7 @@ services:
   # eng-reports/rewrite-ratio, since it's a REST API a customer's own
   # dashboards poll.
   eng-api:
-    image: ghcr.io/gitultrahq/eng-api:v1.7.0
+    image: ghcr.io/gitultrahq/eng-api:v1.8.0
     restart: unless-stopped
     ports:
       - "${ENG_API_PORT:-8000}:8000"
@@ -203,6 +204,10 @@ services:
       AI_COAUTHORS_PATH: ${ENG_API_AI_COAUTHORS_PATH:-}
       TAG_PATTERN: ${ENG_API_TAG_PATTERN:-}
       KPI_TARGETS_PATH: ${KPI_TARGETS_PATH:-}
+      # Target history and baselines -- see
+      # gitultra-wiki/Specs/Target-History-Baseline.md.
+      ANNOTATIONS_PATH: ${ANNOTATIONS_PATH:-}
+      FISCAL_YEAR_START_MONTH: ${FISCAL_YEAR_START_MONTH:-}
       TELEMETRY_DISABLED: ${TELEMETRY_DISABLED:-}
       TELEMETRY_SHARED_SECRET: ${TELEMETRY_SHARED_SECRET:-}
       # Only needed for the manager email-OTP flow (team-reporting
