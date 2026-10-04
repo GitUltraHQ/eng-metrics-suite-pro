@@ -143,13 +143,19 @@ services:
   # --output), so this container isn't meant to be left running. See the
   # README for how to invoke it with `docker compose run`.
   eng-reports:
-    image: ghcr.io/gitultrahq/eng-reports:v1.5.1
+    image: ghcr.io/gitultrahq/eng-reports:v1.6.0
     entrypoint: ["python3"]
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgres://postgres:${POSTGRES_PASSWORD:-changeme}@postgres:5432/git_stats}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       TELEMETRY_DISABLED: ${TELEMETRY_DISABLED:-}
       TELEMETRY_SHARED_SECRET: ${TELEMETRY_SHARED_SECRET:-}
+      # executive_report.py checks this for the "executive-report"
+      # product; every other eng-reports script ignores it.
+      GITULTRA_LICENSE_KEY: ${GITULTRA_LICENSE_KEY:-}
+      # Same file eng-api reads below, so the Executive Report PDF and
+      # GET /v1/executive-report always agree on targets.
+      KPI_TARGETS_PATH: ${KPI_TARGETS_PATH:-}
       # Only needed if you use email_team_reports.py to email team
       # reports to managers -- see docs/scheduling.md. Your own SMTP
       # relay, never GitUltra's -- see
@@ -196,6 +202,7 @@ services:
       ORG_ROLES_PATH: ${ENG_API_ORG_ROLES_PATH:-}
       AI_COAUTHORS_PATH: ${ENG_API_AI_COAUTHORS_PATH:-}
       TAG_PATTERN: ${ENG_API_TAG_PATTERN:-}
+      KPI_TARGETS_PATH: ${KPI_TARGETS_PATH:-}
       TELEMETRY_DISABLED: ${TELEMETRY_DISABLED:-}
       TELEMETRY_SHARED_SECRET: ${TELEMETRY_SHARED_SECRET:-}
       # Only needed for the manager email-OTP flow (team-reporting
