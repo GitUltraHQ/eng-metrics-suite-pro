@@ -179,7 +179,7 @@ services:
   # eng-reports/rewrite-ratio, since it's a REST API a customer's own
   # dashboards poll.
   eng-api:
-    image: ghcr.io/gitultrahq/eng-api:v1.8.4
+    image: ghcr.io/gitultrahq/eng-api:v1.8.5
     restart: unless-stopped
     ports:
       - "${ENG_API_PORT:-8000}:8000"
