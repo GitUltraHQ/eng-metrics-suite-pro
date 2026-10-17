@@ -152,7 +152,7 @@ services:
   # --output), so this container isn't meant to be left running. See the
   # README for how to invoke it with `docker compose run`.
   eng-reports:
-    image: ghcr.io/gitultrahq/eng-reports:v1.8.5
+    image: ghcr.io/gitultrahq/eng-reports:v1.8.6
     entrypoint: ["python3"]
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgres://postgres:${POSTGRES_PASSWORD:-changeme}@postgres:5432/git_stats}
@@ -188,7 +188,7 @@ services:
   # eng-reports/rewrite-ratio, since it's a REST API a customer's own
   # dashboards poll.
   eng-api:
-    image: ghcr.io/gitultrahq/eng-api:v1.8.7
+    image: ghcr.io/gitultrahq/eng-api:v1.8.8
     restart: unless-stopped
     ports:
       - "${ENG_API_PORT:-8000}:8000"
@@ -260,7 +260,7 @@ services:
   # image, license-gated -- see gitultra-mcp's own README's
   # "Distribution" section.
   gitultra-mcp:
-    image: ghcr.io/gitultrahq/gitultra-mcp:v1.3.0
+    image: ghcr.io/gitultrahq/gitultra-mcp:v1.3.1
     restart: unless-stopped
     ports:
       - "${GITULTRA_MCP_PORT:-8100}:8000"
