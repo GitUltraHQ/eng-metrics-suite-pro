@@ -26,7 +26,7 @@ services:
   # before starting. restart: "no" is deliberate -- exiting 0 isn't a
   # crash to recover from, this isn't meant to be left running.
   migrate:
-    image: ghcr.io/gitultrahq/gitultra-migrate:v1.8.0
+    image: ghcr.io/gitultrahq/gitultra-migrate:v1.9.0
     restart: "no"
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgres://postgres:${POSTGRES_PASSWORD:-changeme}@postgres:5432/git_stats}
@@ -83,7 +83,7 @@ services:
   # mirror-cache equivalent needed here: vendor APIs are queried with an
   # incremental "since" filter directly, no local clone involved.
   pr-processor:
-    image: ghcr.io/gitultrahq/pr-processor:v1.4.0
+    image: ghcr.io/gitultrahq/pr-processor:v1.5.0
     restart: unless-stopped
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgres://postgres:${POSTGRES_PASSWORD:-changeme}@postgres:5432/git_stats}
@@ -152,20 +152,32 @@ services:
   # --output), so this container isn't meant to be left running. See the
   # README for how to invoke it with `docker compose run`.
   eng-reports:
-    image: ghcr.io/gitultrahq/eng-reports:v1.8.7
+    image: ghcr.io/gitultrahq/eng-reports:v1.9.0
     entrypoint: ["python3"]
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgres://postgres:${POSTGRES_PASSWORD:-changeme}@postgres:5432/git_stats}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       TELEMETRY_DISABLED: ${TELEMETRY_DISABLED:-}
       TELEMETRY_SHARED_SECRET: ${TELEMETRY_SHARED_SECRET:-}
-      # executive_report.py checks this for the "executive-report"
-      # product; every other eng-reports script ignores it.
+      # The paid scripts (executive_report.py, qbr_report.py,
+      # onboarding_report.py) check this for their product; the free
+      # scripts ignore it.
       GITULTRA_LICENSE_KEY: ${GITULTRA_LICENSE_KEY:-}
       # Same file eng-api reads below, so the Executive Report PDF and
       # GET /v1/executive-report always agree on targets.
       KPI_TARGETS_PATH: ${KPI_TARGETS_PATH:-}
       FISCAL_YEAR_START_MONTH: ${FISCAL_YEAR_START_MONTH:-}
+      # The same .env values eng-api reads below, so both agree on teams,
+      # AI tools and what counts as a deployment: the KPIs in the
+      # Executive/QBR/Onboarding reports use TAG_PATTERN like eng-api's
+      # baselines do, and the Onboarding Report shows these under
+      # Configuration.
+      TEAM_MAP_PATH: ${ENG_API_TEAM_MAP_PATH:-}
+      AI_COAUTHORS_PATH: ${ENG_API_AI_COAUTHORS_PATH:-}
+      TAG_PATTERN: ${ENG_API_TAG_PATTERN:-}
+      # Onboarding Report only: extra bot account regexes, added to the
+      # bundled list.
+      BOT_PATTERNS_PATH: ${BOT_PATTERNS_PATH:-}
       # Only needed if you use email_team_reports.py to email team
       # reports to managers -- see docs/scheduling.md. Your own SMTP
       # relay, never GitUltra's -- see
@@ -188,7 +200,7 @@ services:
   # eng-reports/rewrite-ratio, since it's a REST API a customer's own
   # dashboards poll.
   eng-api:
-    image: ghcr.io/gitultrahq/eng-api:v1.8.8
+    image: ghcr.io/gitultrahq/eng-api:v1.9.0
     restart: unless-stopped
     ports:
       - "${ENG_API_PORT:-8000}:8000"
